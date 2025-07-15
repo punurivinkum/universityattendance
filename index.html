@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Attendance Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/gaugeJS/dist/gauge.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #F9FAFB, #FFFFFF);
+            color: #374151;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: sticky;
+            top: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #1E3A8A;
+            padding: 15px 50px;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 25px;
+            margin: 0;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            font-size: 16px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: #AB47BC;
+        }
+
+        .linkedin-icon {
+            font-size: 24px;
+            color: white;
+            transition: color 0.3s;
+        }
+
+        .linkedin-icon:hover {
+            color: #42A5F5;
+        }
+
+        /* Sections */
+        .section {
+            display: none;
+            padding: 40px 20px;
+            max-width: 900px;
+            margin: 20px auto;
+            background: #FFFFFF;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        #home {
+            display: block;
+            padding: 60px 20px;
+        }
+
+        /* Stay on Track */
+        .stay-on-track {
+            background: #FDF2F8;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 40px;
+            border-left: 5px solid #AB47BC;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .stay-on-track h3 {
+            font-size: 24px;
+            color: #AB47BC;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .stay-on-track p {
+            font-size: 16px;
+            color: #374151;
+            margin: 0;
+        }
+
+        .stay-on-track .icon {
+            font-size: 24px;
+            color: #FB8C00;
+        }
+
+        /* Home Content */
+        #home h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 20px;
+        }
+
+        #home p {
+            font-size: 20px;
+            color: #6B7280;
+            margin-bottom: 30px;
+        }
+
+        /* Attendance Overview */
+        .attendance-overview {
+            max-width: 900px;
+            background: #FFFFFF;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 40px;
+        }
+
+        .attendance-overview h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #374151;
+        }
+
+        .overview-toggle {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .overview-toggle button {
+            padding: 8px 20px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            background: #F9FAFB;
+            color: #374151;
+            transition: all 0.3s ease;
+        }
+
+        .overview-toggle .active {
+            background: #42A5F5;
+            color: white;
+        }
+
+        .overview-toggle button:hover {
+            background: #42A5F5;
+            color: white;
+        }
+
+        .overview-cards {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .overview-card {
+            flex: 1;
+            background: #F9FAFB;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .overview-card .value {
+            font-size: 36px;
+            color: #42A5F5;
+            margin-bottom: 10px;
+        }
+
+        .overview-card .label {
+            font-size: 16px;
+            color: #6B7280;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #E3F2FD;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #42A5F5;
+            transition: width 0.5s ease;
+        }
+
+        /* How to Use */
+        .how-to-use {
+            margin-top: 40px;
+            padding: 20px;
+            background: #FFFFFF;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .how-to-use h3 {
+            font-size: 18px;
+            color: #374151;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .how-to-use ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            text-align: left;
+            color: #6B7280;
+        }
+
+        .how-to-use li {
+            margin-bottom: 10px;
+        }
+
+        /* Input Fields */
+        .input-group {
+            margin: 15px 0;
+            text-align: left;
+        }
+
+        .input-group label {
+            font-weight: 500;
+            color: #374151;
+            display: block;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: #42A5F5;
+            outline: none;
+        }
+
+        /* Buttons */
+        .btn {
+            background: #42A5F5;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            background: #1E88E5;
+            box-shadow: 0 2px 10px rgba(66, 165, 245, 0.3);
+        }
+
+        .btn-reset {
+            background: #AB47BC;
+        }
+
+        .btn-reset:hover {
+            background: #8E24AA;
+            box-shadow: 0 2px 10px rgba(171, 71, 188, 0.3);
+        }
+
+        /* Gauge Styles */
+        .gauge-container {
+            display: none;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        canvas {
+            width: 300px;
+            height: 150px;
+            display: block;
+            margin: 20px auto;
+            transition: all 0.5s ease;
+        }
+
+        /* Footer */
+        footer {
+            background: #1E3A8A;
+            padding: 20px;
+            color: white;
+            font-size: 14px;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 600px) {
+            .navbar { padding: 10px 20px; }
+            .logo { font-size: 20px; }
+            nav ul { gap: 15px; }
+            #home h1 { font-size: 32px; }
+            .overview-cards { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <header>
+        <div class="navbar">
+            <div class="logo"><i class="fas fa-graduation-cap"></i> University Attendance Tracker</div>
+            <nav>
+                <ul>
+                    <li><a onclick="showSection('home')">Home</a></li>
+                    <li><a onclick="showSection('subject-attendance')">Subject Attendance</a></li>
+                    <li><a onclick="showSection('ltps')">L-T-P-S Calculator</a></li>
+                </ul>
+            </nav>
+            <a href="https://www.linkedin.com/in/punuri-vinay-kumar-babu-782120296/" target="_blank" class="linkedin-icon"><i class="fab fa-linkedin"></i></a>
+        </div>
+    </header>
+
+    <!-- Home Section -->
+    <section id="home" class="section">
+        <h1>Stay on Track with Attendance</h1>
+        <p>Effortlessly manage your attendance for school, college, or university.</p>
+        <div>
+            <button class="btn" onclick="showSection('subject-attendance')">Calculate Attendance</button>
+            <button class="btn" onclick="showSection('ltps')">LTPS Calculator</button>
+        </div>
+        <div class="attendance-overview">
+            <h2>Attendance Overview</h2>
+            <div class="overview-toggle">
+                <button class="active" onclick="updateOverview('daily')">Daily</button>
+                <button onclick="updateOverview('weekly')">Weekly</button>
+                <button onclick="updateOverview('monthly')">Monthly</button>
+            </div>
+            <div class="overview-cards">
+                <div class="overview-card">
+                    <div class="value" id="avgAttendance">85%</div>
+                    <div class="label">Average Attendance</div>
+                    <div class="progress-bar"><div class="progress-fill" id="avgProgress" style="width: 85%;"></div></div>
+                </div>
+                <div class="overview-card">
+                    <div class="value" id="classesToday">6</div>
+                    <div class="label">Classes Today</div>
+                </div>
+                <div class="overview-card">
+                    <div class="value" id="presentToday">5</div>
+                    <div class="label">Present Today</div>
+                </div>
+            </div>
+        </div>
+        <div class="stay-on-track">
+            <i class="fas fa-lightbulb icon"></i>
+            <div>
+                <h3>Stay on Track!</h3>
+                <p>Keep your attendance above 75% to stay eligible for exams.</p>
+            </div>
+        </div>
+        <div class="how-to-use">
+            <h3>How to Use</h3>
+            <ul>
+                <li>Use "Subject Attendance" to calculate based on total and attended classes.</li>
+                <li>Use "L-T-P-S Calculator" for Lecture, Tutorial, Practical, and Skill percentages.</li>
+                <li>Switch between Daily, Weekly, and Monthly views in the overview.</li>
+                <li>Enter numbers and click "Calculate" to see your gauge.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Subject Attendance Section -->
+    <section id="subject-attendance" class="section">
+        <h2><i class="fas fa-chart-pie"></i> Subject Attendance Calculator</h2>
+        <div class="input-group">
+            <label>Total Classes:</label>
+            <input type="number" id="totalClasses" placeholder="Enter total classes" min="1">
+        </div>
+        <div class="input-group">
+            <label>Attended Classes:</label>
+            <input type="number" id="attendedClasses" placeholder="Enter attended classes" min="0">
+        </div>
+        <button class="btn" onclick="calculateAttendance()">Calculate</button>
+        <button class="btn btn-reset" onclick="resetAttendance()">Reset</button>
+        <div id="attendanceGaugeContainer" class="gauge-container">
+            <canvas id="attendanceGauge"></canvas>
+            <p id="attendanceResult"></p>
+        </div>
+    </section>
+
+    <!-- L-T-P-S Attendance Section -->
+    <section id="ltps" class="section">
+        <h2><i class="fas fa-calculator"></i> L-T-P-S Attendance Calculator</h2>
+        <div class="input-group">
+            <label>Lecture Attendance (%)</label>
+            <input type="number" id="lecture" min="0" max="100">
+        </div>
+        <div class="input-group">
+            <label>Tutorial Attendance (%)</label>
+            <input type="number" id="tutorial" min="0" max="100">
+        </div>
+        <div class="input-group">
+            <label>Practical Attendance (%)</label>
+            <input type="number" id="practical" min="0" max="100">
+        </div>
+        <div class="input-group">
+            <label>Skill Attendance (%)</label>
+            <input type="number" id="skill" min="0" max="100">
+        </div>
+        <button class="btn" onclick="calculateLTPS()">Calculate</button>
+        <button class="btn btn-reset" onclick="resetLTPS()">Reset</button>
+        <div id="ltpsGaugeContainer" class="gauge-container">
+            <canvas id="ltpsGauge"></canvas>
+            <p id="ltpsResult"></p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© All rights reserved.
+This code is proprietary. Unauthorized copying, distribution, or use is prohibited.
+ <i class="fas fa-heart"></i></p>
+    </footer>
+
+    <script>
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => section.style.display = 'none');
+            document.getElementById(sectionId).style.display = 'block';
+        }
+
+        function calculateAttendance() {
+            let total = Number(document.getElementById("totalClasses").value);
+            let attended = Number(document.getElementById("attendedClasses").value);
+            if (total > 0 && attended <= total) {
+                let percentage = ((attended / total) * 100).toFixed(2);
+                displayGauge("attendanceGaugeContainer", "attendanceGauge", "attendanceResult", percentage);
+            }
+        }
+
+        function resetAttendance() {
+            document.getElementById("totalClasses").value = '';
+            document.getElementById("attendedClasses").value = '';
+            document.getElementById("attendanceGaugeContainer").style.display = 'none';
+        }
+
+        function calculateLTPS() {
+            let values = ["lecture", "tutorial", "practical", "skill"].map(id => {
+                let val = Number(document.getElementById(id).value) || 0;
+                return val >= 0 && val <= 100 ? val : 0;
+            });
+            let avg = (values.reduce((a, b) => a + b, 0) / values.filter(v => v > 0).length).toFixed(2);
+            if (!isNaN(avg)) {
+                displayGauge("ltpsGaugeContainer", "ltpsGauge", "ltpsResult", avg);
+            }
+        }
+
+        function resetLTPS() {
+            ["lecture", "tutorial", "practical", "skill"].forEach(id => document.getElementById(id).value = '');
+            document.getElementById("ltpsGaugeContainer").style.display = 'none';
+        }
+
+        function displayGauge(containerId, gaugeId, resultId, percentage) {
+            document.getElementById(containerId).style.display = 'block';
+            const canvas = document.getElementById(gaugeId);
+            
+            // Determine colors based on percentage
+            const color = percentage >= 85 ? '#34C759' : percentage >= 75 ? '#FB8C00' : '#EF4444';
+            const bgColor = percentage >= 85 ? '#DCFCE7' : percentage >= 75 ? '#FEF3C7' : '#FEE2E2';
+
+            // Create gauge with animation
+            let gauge = new Gauge(canvas).setOptions({
+                angle: 0.2,
+                lineWidth: 0.2,
+                radiusScale: 1.0,
+                pointer: {
+                    length: 0.6,
+                    strokeWidth: 0.035,
+                    color: '#000000'
+                },
+                limitMax: true,
+                limitMin: true,
+                colorStart: color,
+                colorStop: color,
+                strokeColor: '#E0E0E0',
+                generateGradient: true,
+                highDpiSupport: true,
+                staticZones: [
+                    {strokeStyle: "#EF4444", min: 0, max: 75},
+                    {strokeStyle: "#FB8C00", min: 75, max: 85},
+                    {strokeStyle: "#34C759", min: 85, max: 100}
+                ],
+                staticLabels: {
+                    font: "12px Poppins",
+                    labels: [0, 75, 85, 100],
+                    color: "#374151",
+                    fractionDigits: 0
+                }
+            });
+
+            gauge.maxValue = 100;
+            gauge.setMinValue(0);
+            gauge.animationSpeed = 32;
+            
+            // Animate the gauge value
+            let currentValue = 0;
+            const animationStep = percentage / 50;
+            const animateGauge = setInterval(() => {
+                if (currentValue < percentage) {
+                    currentValue = Math.min(currentValue + animationStep, percentage);
+                    gauge.set(currentValue);
+                } else {
+                    clearInterval(animateGauge);
+                }
+            }, 20);
+
+            // Add background color transition
+            canvas.style.backgroundColor = bgColor;
+            canvas.style.transition = 'background-color 0.5s ease, transform 0.5s ease';
+            canvas.style.transform = 'scale(1)';
+            setTimeout(() => {
+                canvas.style.transform = 'scale(1.05)';
+                setTimeout(() => {
+                    canvas.style.transform = 'scale(1)';
+                }, 250);
+            }, 100);
+
+            document.getElementById(resultId).innerHTML = `<strong>Attendance: ${percentage}%</strong><br>⭐ ${getStars(percentage)}<br>📝 ${getComment(percentage)}`;
+        }
+
+        function getStars(percentage) {
+            return percentage >= 85 ? "★★★★★ (Excellent)" : percentage >= 75 ? "★★★★☆ (Needs Improvement)" : "★☆☆☆☆ (Danger)";
+        }
+
+        function getComment(percentage) {
+            return percentage >= 85 ? "Great job! Keep it up!" : percentage >= 75 ? "You're on track, but aim higher!" : "Warning! Boost your attendance.";
+        }
+
+        const attendanceData = {
+            daily: { avgAttendance: 85, classesToday: 6, presentToday: 5 },
+            weekly: { avgAttendance: 82, classesToday: 40, presentToday: 33 },
+            monthly: { avgAttendance: 80, classesToday: 120, presentToday: 96 }
+        };
+
+        function updateOverview(view) {
+            const toggleButtons = document.querySelectorAll('.overview-toggle button');
+            toggleButtons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            const data = attendanceData[view];
+            document.getElementById('avgAttendance').textContent = `${data.avgAttendance}%`;
+            document.getElementById('avgProgress').style.width = `${data.avgAttendance}%`;
+            document.getElementById('classesToday').textContent = data.classesToday;
+            document.getElementById('presentToday').textContent = data.presentToday;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateOverview('daily');
+        });
+    </script>
+
+</body>
+</html>
