@@ -1,2 +1,0 @@
-# universityattendance
-The University Attendance Tracker is a simple, web-based tool designed to help students monitor their attendance across various subjects. Users can enter the number of attended and total classes, and the app instantly calculates the attendance percentage. It also indicates whether the student meets the minimum required threshold (e.g., 75%)
